@@ -1,1 +1,1 @@
-# visit-city
+[![CI Pipeline](https://github.com/SayanWD/visit-city/actions/workflows/ci.yml/badge.svg)](https://github.com/SayanWD/visit-city/actions/workflows/ci.yml)
