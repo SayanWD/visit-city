@@ -1,5 +1,11 @@
 'use strict';
 
+const fastify = require('fastify')({ logger: true })
+const cors = require('@fastify/cors')
+fastify.register(cors, {
+  origin: true // или конкретно ['http://localhost:5173','http://localhost:3000']
+})
+
 // если хочешь локально без Docker, раскомментируй:
 // require('dotenv').config();
 
