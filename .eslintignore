@@ -1,0 +1,10 @@
+# игнорируем зависимости и мобильный проект
+node_modules/
+src/mobile/
+
+# игнорируем собранный фронтенд
+src/frontend/dist/
+src/frontend/node_modules/
+
+# скрипты и прочие обёртки
+**/*.sh

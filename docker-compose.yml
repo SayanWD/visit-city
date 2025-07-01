@@ -4,7 +4,7 @@ services:
     image: postgres:16
     container_name: visit-city-db
     restart: unless-stopped
-    env_file: 
+    env_file:
       - .env
     environment:
       POSTGRES_USER: ${DB_USER:-user}
@@ -28,14 +28,14 @@ services:
 
   backend:
     build:
-      context: .
-      dockerfile: src/backend/Dockerfile
+      context: ./src/backend    # ← здесь теперь правильный контекст
+      dockerfile: Dockerfile
     container_name: visit-city-backend
     restart: unless-stopped
     env_file:
       - .env
     ports:
-      - "${PORT}:4000"
+      - "${PORT:-4000}:4000"
     depends_on:
       - db
       - redis

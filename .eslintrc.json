@@ -1,13 +1,67 @@
 {
   "root": true,
+  // эти файлы и папки не трогаем
+  "ignorePatterns": [
+    "node_modules/",
+    "src/mobile/",
+    "src/frontend/dist/",
+    "src/frontend/node_modules/",
+    "**/*.sh"
+  ],
+  "settings": {
+    "react": {
+      "version": "detect"
+    }
+  },
   "parser": "@typescript-eslint/parser",
-  "plugins": ["@typescript-eslint"],
+  "parserOptions": {
+    "ecmaVersion": 2020,
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "jsx": true
+    }
+  },
+  "plugins": [
+    "@typescript-eslint",
+    "react",
+    "react-hooks",
+    "react-refresh"
+  ],
   "extends": [
     "eslint:recommended",
-    "plugin:@typescript-eslint/recommended"
+    "plugin:@typescript-eslint/recommended",
+    "plugin:react/recommended",
+    "plugin:react-hooks/recommended"
   ],
-  "env": {
-    "node": true,
-    "es2021": true
-  }
+  "rules": {
+    // в React 17+ не нужно импортировать React в каждом файле
+    "react/react-in-jsx-scope": "off"
+  },
+  "overrides": [
+    {
+      "files": ["src/backend/**/*.js"],
+      "env": {
+        "node": true,
+        "commonjs": true,
+        "es2021": true
+      },
+      "rules": {
+        // CommonJS в бэкенде
+        "@typescript-eslint/no-var-requires": "off",
+        "import/no-require": "off",
+        // не падаем на неиспользуемые аргументы request/reply
+        "no-unused-vars": ["error", { "argsIgnorePattern": "^_" }],
+        "@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_" }],
+        // разрешаем redeclare на бэкенде
+        "no-redeclare": "off"
+      }
+    },
+    {
+      "files": ["**/*.{ts,tsx}"],
+      "rules": {
+        // чтобы catch(e:any) не ругалось
+        "@typescript-eslint/no-explicit-any": "off"
+      }
+    }
+  ]
 }

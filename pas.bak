@@ -1,0 +1,380 @@
+# Пользователь БД
+DB_USER=visit_admin
+# Сильный пароль (обязательно храните .env вне репозитория!)
+DB_PASS=R8d#K4pL2x!
+# Имя базы
+DB_NAME=visitcity
+
+nano@FRUITART-124:/mnt/c/Users/s.roor/Desktop/tourist-portal/visit-city$ curl -X POST http://localhost:4000/signup \
+  -H "Content-Type: application/json" \
+  -d '{"name":"Bob","email":"bob@example.com","password":"secret"}'
+{"user":{"id":1,"name":"Bob","email":"bob@example.com","created_at":"2025-06-26T11:12:54.411Z"},"token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJib2JAZXhhbXBsZS5jb20iLCJpYXQiOjE3NTA5MzYzNzR9.jn9ea-J2zg23SdO3g9E8Be06cJ9JYRYimhSDTGbV1is"}nano@FRUITART-124:/mnt/c/Users/s.roor/Desktop/tourist-portal/visit-city$
+
+
+curl http://localhost:4000/profile \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJib2JAZXhhbXBsZS5jb20iLCJpYXQiOjE3NTA5MzYzNzR9.jn9ea-J2zg23SdO3g9E8Be06cJ9JYRYimhSDTGbV1is"
+
+docker exec -it visit-city-db \
+  psql -U ${DB_USER:-user} -d ${DB_NAME:-visitcity} \
+  -c "ALTER TABLE users ADD COLUMN role VARCHAR(20) NOT NULL DEFAULT 'user';"
+
+
+
+nano@FRUITART-124:/mnt/c/Users/s.roor/Desktop/tourist-portal/visit-city$ RESP=$(curl -s -X POST http://localhost:4000/signup \
+  -H "Content-Type: application/json" \
+  -d '{"name":"FinalTest","email":"final@test.com","password":"secret"}')
+echo "SIGNUP → $RESP"
+SIGNUP → {"user":{"id":20,"name":"FinalTest","email":"final@test.com","created_at":"2025-06-30T09:16:13.212Z"},"token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjAsImVtYWlsIjoiZmluYWxAdGVzdC5jb20iLCJpYXQiOjE3NTEyNzQ5NzN9.AtzdGe71perx5zIohSlTS0zVQfsOx8dFhqMmqEb651M"}
+nano@FRUITART-124:/mnt/c/Users/s.roor/Desktop/tourist-portal/visit-city$ \
+
+
+curl -s http://localhost:4000/users \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjAsImVtYWlsIjoiZmluYWxAdGVzdC5jb20iLCJpYXQiOjE3NTEyNzQ5NzN9.AtzdGe71perx5zIohSlTS0zVQfsOx8dFhqMmqEb651M" \
+| jq .
+
+
+{"user":{"id":21,"name":"FinalRoleTest","email":"role@test.com","created_at":"2025-06-30T09:27:12.779Z"},"token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjEsImVtYWlsIjoicm9sZUB0ZXN0LmNvbSIsImlhdCI6MTc1MTI3NTYzMn0.Vj3BpS6L479PwMFCdvA81HLdk8uaRb-cIWdPrSj4n40"}
+
+curl -i http://localhost:4000/users \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjEsImVtYWlsIjoicm9sZUB0ZXN0LmNvbSIsImlhdCI6MTc1MTI3NTYzMn0.Vj3BpS6L479PwMFCdvA81HLdk8uaRb-cIWdPrSj4n40"
+
+
+  curl -i http://localhost:4000/profile \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjEsImVtYWlsIjoicm9sZUB0ZXN0LmNvbSIsImlhdCI6MTc1MTI3NTYzMn0.Vj3BpS6L479PwMFCdvA81HLdk8uaRb-cIWdPrSj4n40"
+
+
+
+
+  # Если уже запускали — сперва очистка:
+docker compose down -v
+
+# Поднять только БД и Redis (миграции выполнятся автоматически):
+docker compose up -d db redis
+
+# Собрать и поднять бэкенд:
+docker compose build backend
+docker compose up -d backend
+
+# В отдельной вкладке собрать фронтенд (вы можете собирать локально у себя в dev-режиме npm run dev для более быстрой проверки):
+cd src/frontend
+npm run build    # или npm run dev для режима разработки
+cd ../..
+
+# И собрать/запустить контейнер фронта:
+docker compose build frontend
+docker compose up -d frontend
+
+
+
+{"status":"ok"}nano@FRUITART-124:/mnt/c/Users/s.roor/Desktop/tourist-portRESP=$(curl -s -X POST http://localhost:4000/signup \t:4000/signup \
+  -H "Content-Type: application/json" \
+  -d '{"name":"QA User","email":"qa@example.com","password":"secret"}')
+echo "SIGNUP → $RESP"
+SIGNUP → {"user":{"id":22,"name":"QA User","email":"qa@example.com","created_at":"2025-06-30T09:59:55.077Z"},"token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjIsImVtYWlsIjoicWFAZXhhbXBsZS5jb20iLCJpYXQiOjE3NTEyNzc1OTV9.ws0jYOxW5YcuUayKWt4qoU627tZjYNtmyMP1sFic81c"}
+
+
+curl -i http://localhost:4000/profile \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjIsImVtYWlsIjoicWFAZXhhbXBsZS5jb20iLCJpYXQiOjE3NTEyNzc1OTV9.ws0jYOxW5YcuUayKWt4qoU627tZjYNtmyMP1sFic81c"
+
+# берём ID первого пользователя из списка, например 21
+curl -i -X PUT http://localhost:4000/users/22 \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $TOKEN" \
+  -d '{"name":"QA User II","email":"qa2@example.com","role":"admin"}'
+
+RESP=$(curl -s -X POST http://localhost:4000/signup \
+  -H "Content-Type: application/json" \
+  -d '{"name":"User12","email":"user12@example.com","password":"secret"}')
+echo "SIGNUP → $RESP"
+
+SIGNUP → {"user":{"id":23,"name":"User12","email":"user12@example.com","created_at":"2025-06-30T11:02:52.342Z"},"token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjMsImVtYWlsIjoidXNlcjEyQGV4YW1wbGUuY29tIiwiaWF0IjoxNzUxMjgxMzcyfQ.YQNl44kXwYOHbyHAtWDpKqktAGzJWkwI-ET5OXOxY8A"}
+
+
+curl -i http://localhost:4000/users \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjMsImVtYWlsIjoidXNlcjEyQGV4YW1wbGUuY29tIiwiaWF0IjoxNzUxMjgxMzcyfQ.YQNl44kXwYOHbyHAtWDpKqktAGzJWkwI-ET5OXOxY8A"
+
+curl -i -X PUT http://localhost:4000/users/23 \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjMsImVtYWlsIjoidXNlcjEyQGV4YW1wbGUuY29tIiwiaWF0IjoxNzUxMjgxMzcyfQ.YQNl44kXwYOHbyHAtWDpKqktAGzJWkwI-ET5OXOxY8A" \
+  -d '{"role":"admin"}'
+
+
+curl -i http://localhost:4000/users/23 \
+  -H "Authorization: Bearer $TOKEN"
+
+curl -i -X DELETE http://localhost:4000/users/22 \
+  -H "Authorization: Bearer $TOKEN"
+
+
+RESP=$(curl -s -X POST http://localhost:4000/signup \
+  -H "Content-Type: application/json" \
+  -d '{"name":"RoleUser","email":"roleuser@ex.com","password":"sec12345"}')
+echo "SIGNUP → $RESP"
+
+SIGNUP → {"user":{"id":24,"name":"RoleUser","email":"roleuser@ex.com","created_at":"2025-06-30T11:44:40.101Z"},"token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjQsImVtYWlsIjoicm9sZXVzZXJAZXguY29tIiwiaWF0IjoxNzUxMjgzODgwfQ.PtPRv35eZ3b2p4zqBtm8HDkhrnWrk5mZ5AdLZqhLeXk"}
+
+
+curl -i http://localhost:4000/profile \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjQsImVtYWlsIjoicm9sZXVzZXJAZXguY29tIiwiaWF0IjoxNzUxMjgzODgwfQ.PtPRv35eZ3b2p4zqBtm8HDkhrnWrk5mZ5AdLZqhLeXk"
+
+docker exec -it visit-city-backend sh -c "head -n 30 /visit-city/src/backend/index.js"
+
+
+
+1. Убедиться в схеме таблицы
+bash
+Копировать
+Редактировать
+docker exec -it visit-city-db \
+  psql -U ${DB_USER:-user} -d ${DB_NAME:-visitcity} \
+  -c "\d users"
+
+
+2. Проверить код внутри контейнера
+В вашем образе бэкенда файл index.js обычно копируется в рабочую директорию /app. Давайте посмотрим на первые строки этого файла:
+
+bash
+Копировать
+Редактировать
+docker exec -it visit-city-backend sh -c "head -n 30 /app/index.js"
+
+
+
+
+И ещё раз убедимся, что в нём есть везде role:
+docker exec -it visit-city-backend sh -c "grep -R \"RETURNING.*role\" -n /app/index.js"
+/app/index.js:<номер строки>:      RETURNING id,name,email,role,created_at
+docker exec -it visit-city-backend sh -c "grep -R \"SELECT.*role\" -n /app/index.js"
+/app/index.js:<номер строки>:      'SELECT id,name,email,role,created_at FROM users WHERE id = $1'
+
+
+
+docker exec -it visit-city-backend sh -c "curl -s http://localhost:4000/users \
+  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjQsImVtYWlsIjoicm9sZXVzZXJAZXguY29tIiwiaWF0IjoxNzUxMjgzODgwfQ.PtPRv35eZ3b2p4zqBtm8HDkhrnWrk5mZ5AdLZqhLeXk'"
+
+
+Похоже, что несмотря на то, что вы во-первых добавили в исходники `SELECT … role …` и `RETURNING … role …`, а во-вторых создали миграцию `003_add_role_to_users.sql`, у вас в реальном контейнере при вызове `GET /users` всё ещё возвращается старая схема без поля `role`. Давайте дернем всё наверх и проверим:
+
+---
+
+### 1. Убедимся, что в контейнере реально лежит ваш обновлённый `index.js`
+
+1. Посмотреть список файлов и точный путь, где лежит `index.js`:
+
+   ```bash
+   docker exec -it visit-city-backend sh -c "ls -R /app"
+   ```
+2. Найти внутри контейнера ваш `index.js` и вывести его начало, чтобы увидеть, какая версия на самом деле запущена:
+
+   ```bash
+   # подставьте реальный путь к файлу, который вы нашли на предыдущем шаге
+   docker exec -it visit-city-backend sh -c "sed -n '1,50p' /app/index.js"
+   ```
+3. Убедиться, что именно в этом файле есть строка
+
+   ```js
+   fastify.get('/users', … 'SELECT id,name,email,role,created_at FROM users ORDER BY id' …)
+   ```
+
+   и больше **нет** старого варианта без `role`.
+
+---
+
+### 2. Проверим `Dockerfile` бэкенда и `docker-compose.yml`
+
+Нам нужно понять, **как** ваш код попадает в образ:
+
+* **Dockerfile** (из корня `visit-city` или из `src/backend`, в зависимости от вашего проекта)
+  Пожалуйста, приложите сюда его содержимое целиком или хотя бы часть, где вы `COPY`’ите `index.js` / `src/backend` в `/app`.
+
+* **docker-compose.yml**
+  – Как у вас организован сервис `db` (монтаж `/docker-entrypoint-initdb.d`)?
+  – Как у вас организован сервис `backend` (откуда берётся context и куда монтируется код)?
+
+---
+
+### 3. Проверим, что миграции в базе действительно применились
+
+1. Вывод текущих столбцов таблицы `users` (не `\d`, а через `information_schema`, чтобы точно видеть все колонки):
+
+   ```bash
+   docker exec -it visit-city-db \
+     psql -U ${DB_USER:-user} -d ${DB_NAME:-visitcity} \
+     -c "SELECT column_name, data_type, column_default 
+         FROM information_schema.columns 
+         WHERE table_name='users';"
+   ```
+
+   Должны быть строки `password_hash` и `role`.
+
+2. Логи контейнера Postgres при старте, чтобы убедиться, что все три скрипта (`001_…`, `002_…`, `003_…`) действительно отработали:
+
+   ```bash
+   docker logs visit-city-db --tail 50
+   ```
+
+   Ищем в логах строчки `ALTER TABLE users ADD COLUMN role`.
+
+---
+
+### 4. Повторный запрос к API
+
+После того как мы удостоверимся, что:
+
+* код в контейнере свежий,
+* миграции применились,
+
+повторим запрос **с хоста** (не изнутри контейнера, чтобы не искать curl там), например:
+
+```bash
+TOKEN=<ваш_токен>
+curl -s http://localhost:4000/users -H "Authorization: Bearer $TOKEN" | jq .
+```
+
+В полученном JSON каждое юзер-объект должно иметь ключ `"role"`.
+
+---
+
+**Пожалуйста, пришлите:**
+
+1. Вывод `ls -R /app` и `sed -n '1,50p' /app/index.js` из контейнера `visit-city-backend`.
+2. Содержимое вашего `Dockerfile` для сервиса `backend`.
+3. Содержимое вашего `docker-compose.yml`.
+4. Результат запроса к `information_schema.columns`.
+5. Фрагменты логов `visit-city-db`, показывающие применение миграций.
+
+С этой информацией мы сможем точно локализовать, где осталось старое «без-role» звено.
+
+
+docker compose up -d --build
+
+
+RESP=$(curl -s -X POST http://localhost:4000/signup \
+  -H "Content-Type: application/json" \
+  -d '{"name":"Role","email":"role@ex.com","password":"sec12345"}')
+echo "SIGNUP → $RESP"
+
+
+
+docker compose build backend
+docker compose up -d backend
+docker logs visit-city-backend --tail 20
+
+
+RESP=$(curl -s -X POST http://localhost:4000/signup \
+  -H "Content-Type: application/json" \
+  -d '{"name":"Smoker","email":"smoker@test.com","password":"sec12345"}')
+echo "$RESP"
+
+
+nano@FRUITART-124:~/projects/visit-city$ RESP=$(curl -s -X POST http://localhost:4000/signup \t:4000/signup \
+  -H "Content-Type: application/json" \
+  -d '{"name":"Smoker","email":"smoker@test.com","password":"sec12345"}')
+echo "$RESP"
+{"user":{"id":1,"name":"Smoker","email":"smoker@test.com","role":"user","created_at":"2025-07-01T04:19:30.885Z"},"token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJzbW9rZXJAdGVzdC5jb20iLCJyb2xlIjoidXNlciIsImlhdCI6MTc1MTM0MzU3MH0.HWVIvMXnNwSR985JRw8K0gBGKx5bjbQvOA4W1JcoVOE"}
+
+curl -i http://localhost:4000/profile \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJzbW9rZXJAdGVzdC5jb20iLCJyb2xlIjoidXNlciIsImlhdCI6MTc1MTM0MzU3MH0.HWVIvMXnNwSR985JRw8K0gBGKx5bjbQvOA4W1JcoVOE"
+
+
+
+RESP=$(curl -s -X POST http://localhost:4000/signup \
+  -H "Content-Type: application/json" \
+  -d '{"name":"Admin","email":"admin@test.com","password":"sec12345"}')
+echo "$RESP"
+
+nano@FRUITART-124:~/projects/visit-city$ RESP=$(curl -s -X POST http://localhost:4000/signup \
+  -H "Content-Type: application/json" \
+  -d '{"name":"Admin","email":"admin@test.com","password":"sec12345"}')
+echo "$RESP"
+{"user":{"id":2,"name":"Admin","email":"admin@test.com","role":"user","created_at":"2025-07-01T05:09:23.095Z"},"token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZW1haWwiOiJhZG1pbkB0ZXN0LmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzUxMzQ2NTYzfQ.uoASzc1g2Hf74m9i9cqRoeSSJwv_MKXB0QXZYMblneo"}
+
+
+curl -i http://localhost:4000/users \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZW1haWwiOiJhZG1pbkB0ZXN0LmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzUxMzQ2NTYzfQ.uoASzc1g2Hf74m9i9cqRoeSSJwv_MKXB0QXZYMblneo"
+
+
+RESP=$(curl -s -X POST http://localhost:4000/signup \
+  -H "Content-Type: application/json" \
+  -d '{"name":"User","email":"user@test.com","password":"sec12345"}')
+echo "$RESP"
+
+
+curl -i http://localhost:4000/users \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZW1haWwiOiJhZG1pbkB0ZXN0LmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzUxMzQ2NTYzfQ.uoASzc1g2Hf74m9i9cqRoeSSJwv_MKXB0QXZYMblneo"
+
+
+
+
+
+
+
+
+
+curl -i http://localhost:4000/users \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJzbW9rZXJAdGVzdC5jb20iLCJyb2xlIjoidXNlciIsImlhdCI6MTc1MTM0MzU3MH0.HWVIvMXnNwSR985JRw8K0gBGKx5bjbQvOA4W1JcoVOE"
+
+curl -i http://localhost:4000/users \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZW1haWwiOiJhZG1pbkB0ZXN0LmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzUxMzQ2NTYzfQ.uoASzc1g2Hf74m9i9cqRoeSSJwv_MKXB0QXZYMblneo"
+
+
+
+
+RESP=$(curl -s -X POST http://localhost:4000/signup \
+  -H "Content-Type: application/json" \
+  -d '{"name":"Admin","email":"admin@example.com","password":"secret"}')
+
+
+
+nano@FRUITART-124:~/projects/visit-city$ ADMIN_TOKEN=$(echo $RESP | sed -E 's/.*"token":"([^"]+)".*/\1/')
+echo "Admin token → $ADMIN_TOKEN"
+Admin token → eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NCwiZW1haWwiOiJhZG1pbkBleGFtcGxlLmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzUxMzQ5NDIzfQ.8nr-N4FFVJ3fqkLfN9ct9EMz2Q-_1wp5DBWkVyNhWmY
+
+
+docker exec -it visit-city-db \
+  psql -U ${DB_USER:-user} -d ${DB_NAME:-visitcity} \
+  -c "UPDATE users SET role = 'admin' WHERE email = 'admin@example.com';"
+
+
+
+curl -i http://localhost:4000/users \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NCwiZW1haWwiOiJhZG1pbkBleGFtcGxlLmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzUxMzQ5NDIzfQ.8nr-N4FFVJ3fqkLfN9ct9EMz2Q-_1wp5DBWkVyNhWmY"
+
+
+
+
+RESP=$(curl -s -X POST http://localhost:4000/signup \
+  -H "Content-Type: application/json" \
+  -d '{"name":"Admin2","email":"admin2@example.com","password":"secret"}')
+ADMIN_TOKEN=$(echo $RESP | sed -E 's/.*"token":"([^"]+)".*/\1/')
+echo "Admin token: $ADMIN_TOKEN"
+
+
+nano@FRUITART-124:~/projects/visit-city$ RESP=$(curl -s -X POST http://localhost:4000/signup \
+  -H "Content-Type: application/json" \
+  -d '{"name":"Admin2","email":"admin2@example.com","password":"secret"}')
+ADMIN_TOKEN=$(echo $RESP | sed -E 's/.*"token":"([^"]+)".*/\1/')
+echo "Admin token: $ADMIN_TOKEN"
+Admin token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJhZG1pbjJAZXhhbXBsZS5jb20iLCJyb2xlIjoidXNlciIsImlhdCI6MTc1MTM1NjQ4MH0.I4Ky_8Vn1qX8t5AXja4Oi4VW4lrMIqwev8uZrUqb7E8
+
+
+RESP=$(curl -s -X POST http://localhost:4000/signup \
+  -H "Content-Type: application/json" \
+  -d '{"name":"User2","email":"user2@example.com","password":"secret"}')
+USER_TOKEN=$(echo $RESP | sed -E 's/.*"token":"([^"]+)".*/\1/')
+echo "User token:  $USER_TOKEN"
+
+nano@FRUITART-124:~/projects/visit-city$ RESP=$(curl -s -X POST http://localhost:4000/signup \
+  -H "Content-Type: application/json" \
+  -d '{"name":"User2","email":"user2@example.com","password":"secret"}')
+USER_TOKEN=$(echo $RESP | sed -E 's/.*"token":"([^"]+)".*/\1/')
+echo "User token:  $USER_TOKEN"
+User token:  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZW1haWwiOiJ1c2VyMkBleGFtcGxlLmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzUxMzU2NTIwfQ.bpWeVTcNoyG8t0vSUcVVBpzPDhLZb6lHBmglS90J0Ak
+
+
+curl -i http://localhost:4000/listing-types \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZW1haWwiOiJ1c2VyMkBleGFtcGxlLmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzUxMzU2NTIwfQ.bpWeVTcNoyG8t0vSUcVVBpzPDhLZb6lHBmglS90J0Ak"
+
+
+curl -i http://localhost:4000/listing-types \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJhZG1pbjJAZXhhbXBsZS5jb20iLCJyb2xlIjoidXNlciIsImlhdCI6MTc1MTM1NjQ4MH0.I4Ky_8Vn1qX8t5AXja4Oi4VW4lrMIqwev8uZrUqb7E8"

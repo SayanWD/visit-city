@@ -1,27 +1,27 @@
+// src/frontend/src/UsersForm.tsx
 import { useState, useEffect } from 'react'
 import type { FormEvent } from 'react'
-import { createUser, updateUser } from './api'
+import { updateUser } from './api'
 import type { User } from './api'
 
 export interface UsersFormProps {
-  /** При передаче — режим редактирования */
-  user?: User
-  /** Вызывается после успешного сабмита */
-  onSubmit: (data: { name: string; email: string }) => void
+  /** Режим редактирования: передаётся существующий пользователь */
+  user: User
+  /** Вызывается после успешного обновления пользователя */
+  onSuccess: (updated: User) => void
   /** Опционально: кнопка «Отмена» */
   onCancel?: () => void
 }
 
-export function UsersForm({ user, onSubmit, onCancel }: UsersFormProps) {
-  const [name, setName] = useState(user?.name ?? '')
-  const [email, setEmail] = useState(user?.email ?? '')
+export function UsersForm({ user, onSuccess, onCancel }: UsersFormProps) {
+  const [name, setName]     = useState(user.name)
+  const [email, setEmail]   = useState(user.email)
   const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const [error, setError]     = useState<string | null>(null)
 
   useEffect(() => {
-    // при смене user сбрасываем поля
-    setName(user?.name ?? '')
-    setEmail(user?.email ?? '')
+    setName(user.name)
+    setEmail(user.email)
     setError(null)
   }, [user])
 
@@ -33,17 +33,8 @@ export function UsersForm({ user, onSubmit, onCancel }: UsersFormProps) {
     }
     setLoading(true)
     try {
-      if (user) {
-        await updateUser(user.id, { name, email })
-      } else {
-        await createUser(name, email)
-      }
-      onSubmit({ name, email })
-      // после создания сбрасываем поля
-      if (!user) {
-        setName('')
-        setEmail('')
-      }
+      const updated = await updateUser(user.id, { name, email })
+      onSuccess(updated)
     } catch (err: any) {
       setError(err.message)
     } finally {
@@ -79,9 +70,9 @@ export function UsersForm({ user, onSubmit, onCancel }: UsersFormProps) {
           disabled={loading}
           className="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700"
         >
-          {user ? 'Update' : 'Add'} User
+          Update User
         </button>
-        {user && onCancel && (
+        {onCancel && (
           <button
             type="button"
             onClick={onCancel}
